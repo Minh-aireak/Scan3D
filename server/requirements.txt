@@ -1,0 +1,14 @@
+# Bắt buộc Python 3.11 (Windows 64-bit). Các phiên bản dưới đây đã được kiểm tra tương thích với code.
+fastapi==0.162.0
+uvicorn[standard]==0.54.0
+python-multipart==0.0.32
+pillow==13.0.0
+numpy==2.4.6
+scipy==1.17.1
+trimesh==5.2.0
+fast-simplification==0.2.0
+
+# AI tách nền (mô hình có sẵn, chạy bằng ONNX Runtime trên CPU).
+# Muốn chạy trên GPU: thay bằng rembg[gpu] (cần cài thêm CUDA 12 + cuDNN 9).
+rembg[cpu]==2.0.86
+onnxruntime==1.31.0

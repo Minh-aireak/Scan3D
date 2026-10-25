@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="QUÉT VẬT THỂ 3D"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="Photogrammetry kết hợp trí tuệ nhân tạo" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Địa chỉ server (laptop chạy server, cùng mạng Wi-Fi):" />
+
+        <EditText
+            android:id="@+id/edtServer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="http://192.168.1.10:8000"
+            android:inputType="textUri" />
+
+        <Button
+            android:id="@+id/btnCheck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kiểm tra kết nối" />
+
+        <TextView
+            android:id="@+id/tvServerStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Chưa kiểm tra kết nối" />
+
+        <Button
+            android:id="@+id/btnScan"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:text="Bắt đầu quét"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btnJobs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mô hình đã tạo" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Hướng dẫn chụp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="4dp"
+            android:text="1. Đặt vật thể đứng yên, nơi đủ sáng, tránh nền bóng loáng.\n2. Đi vòng quanh vật thể, mỗi ảnh lệch khoảng 10–15°.\n3. Nên chụp 2 vòng: ngang tầm vật thể và chéo từ trên xuống.\n4. Ảnh sau trùng khoảng 70% với ảnh trước, chụp 30–80 ảnh.\n5. Vật thể bóng, trong suốt hoặc trơn một màu sẽ khó quét." />
+    </LinearLayout>
+</ScrollView>

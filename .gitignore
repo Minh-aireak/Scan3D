@@ -1,0 +1,6 @@
+# IDE và hệ điều hành
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
