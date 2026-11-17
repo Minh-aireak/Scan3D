@@ -47,6 +47,8 @@ class Colmap:
                 raise PipelineError(
                     f"Không tìm thấy COLMAP ({config.COLMAP_BIN}). Kiểm tra biến môi trường COLMAP_BIN."
                 ) from None
+            except OSError as e:  # ví dụ trên Linux: file COLMAP chưa có quyền chạy (cần chmod +x)
+                raise PipelineError(f"Không chạy được COLMAP ({config.COLMAP_BIN}): {e}") from None
         return proc.returncode
 
     def check(self, command, *args):

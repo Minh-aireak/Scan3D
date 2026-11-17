@@ -1,5 +1,7 @@
 * text=auto
 *.bat text eol=crlf
+# Script chạy trên Linux/macOS phải giữ LF, kể cả khi lấy code về bằng Git trên Windows
+*.sh text eol=lf
 gradlew text eol=lf
 *.jar binary
 *.webp binary

@@ -11,7 +11,9 @@ PORT = int(os.environ.get("SCAN3D_PORT", "8000"))
 DATA_DIR = Path(os.environ.get("SCAN3D_DATA_DIR", BASE_DIR / "data"))
 STATIC_DIR = BASE_DIR / "static"
 
-# Lệnh gọi COLMAP: "colmap" nếu đã có trong PATH, hoặc đường dẫn tới COLMAP.bat (bản Windows có CUDA)
+# Lệnh gọi COLMAP: "colmap" nếu đã có trong PATH, hoặc đường dẫn đầy đủ:
+#   Windows: C:\colmap\COLMAP.bat (bản có CUDA)
+#   Linux:   ~/miniforge3/envs/colmap/bin/colmap (bản CUDA cài bằng conda, run_server.sh tự tìm)
 COLMAP_BIN = os.environ.get("COLMAP_BIN", "colmap")
 
 # Mô hình AI tách nền có sẵn của rembg, tự tải về lần đầu sử dụng.

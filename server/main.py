@@ -64,7 +64,9 @@ app.mount("/static", StaticFiles(directory=config.STATIC_DIR), name="static")
 
 
 def _colmap_available():
-    return shutil.which(config.COLMAP_BIN) is not None or Path(config.COLMAP_BIN).is_file()
+    # which() nhận cả tên lệnh trong PATH lẫn đường dẫn đầy đủ (COLMAP.bat trên Windows);
+    # trên Linux nó còn kiểm tra file có quyền chạy hay không.
+    return shutil.which(config.COLMAP_BIN) is not None
 
 
 def _get_job(job_id):

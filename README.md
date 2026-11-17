@@ -55,7 +55,8 @@ Scan3D/
     ├── mesh_post.py                 Hậu xử lý lưới và xuất GLB/OBJ/PLY
     ├── config.py                    Cấu hình (đường dẫn COLMAP, kích thước ảnh, ...)
     ├── requirements.txt
-    └── run_server.bat               Khởi động server trên Windows
+    ├── run_server.bat               Khởi động server trên Windows
+    └── run_server.sh                Khởi động server trên Linux
 ```
 
 ## Cài đặt server (Windows, laptop có GPU NVIDIA)
@@ -93,7 +94,40 @@ Yêu cầu: GPU NVIDIA có CUDA (từ 4 GB VRAM, nên có 6 GB), RAM từ 16 GB,
    https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js
    và đặt vào `server/static/`. Nếu không có file này, trang xem 3D sẽ tải thư viện từ CDN, nên điện thoại cần có Internet.
 
-### Cấu hình bằng biến môi trường
+## Cài đặt server (Linux, máy có GPU NVIDIA)
+
+Yêu cầu phần cứng như bản Windows. Driver NVIDIA phải hỗ trợ CUDA 12.9 trở lên (`nvidia-smi` hiện `CUDA Version: 12.9` hoặc cao hơn). Python 3.11, 3.12 hoặc 3.13 đều dùng được. Các lệnh dưới đây soạn cho Ubuntu 22.04 / 24.04; hướng dẫn chi tiết ở mục 3B của [HUONG_DAN_CHAY_DU_AN.md](HUONG_DAN_CHAY_DU_AN.md).
+
+1. **Cài COLMAP 4.2.1 bản CUDA** qua Miniforge. COLMAP không phát hành bản cài sẵn cho Linux, còn bản `apt install colmap` của Ubuntu không có CUDA nên không chạy được bước PatchMatch.
+   ```bash
+   wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-$(uname -m).sh"
+   bash "Miniforge3-Linux-$(uname -m).sh" -b -p ~/miniforge3
+   ~/miniforge3/bin/conda create -y -n colmap -c conda-forge "colmap=4.2.1=cuda_129*"
+   ```
+
+2. **Cài thư viện Python** (máy chỉ có Python 3.10 thì xem bước 3B.4 trong hướng dẫn chi tiết):
+   ```bash
+   sudo apt install -y python3-venv
+   cd Scan3D/server
+   python3 -m venv .venv
+   .venv/bin/pip install -r requirements.txt
+   ```
+
+3. **Tải trước mô hình AI tách nền** (không bắt buộc):
+   ```bash
+   .venv/bin/python -c "from rembg import new_session; new_session('isnet-general-use')"
+   ```
+
+4. **Mở cổng 8000** nếu tường lửa `ufw` đang bật: `sudo ufw allow 8000/tcp`
+
+5. **Khởi động server**: `bash run_server.sh`. Script tự tìm COLMAP ở `~/miniforge3/envs/colmap`, không có thì dùng lệnh `colmap` trong PATH; nếu COLMAP nằm chỗ khác thì chạy `COLMAP_BIN=/duong/dan/toi/colmap bash run_server.sh`.
+
+6. **Lấy địa chỉ IP của máy**: chạy `hostname -I` và lấy địa chỉ dạng `192.168.x.x`.
+
+7. (Tùy chọn) **Xem 3D không cần Internet**: trong thư mục `server`, chạy
+   `wget -P static https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js`
+
+## Cấu hình server bằng biến môi trường
 
 | Biến | Mặc định | Ý nghĩa |
 |---|---|---|
@@ -107,8 +141,8 @@ Các thông số khác (kích thước ảnh, độ chi tiết Poisson, số tam
 
 ## Chạy ứng dụng Android
 
-1. Mở thư mục `Scan3D/android` bằng Android Studio, chờ Gradle Sync xong.
-2. Cắm điện thoại (Android 7.0 trở lên, đã bật USB debugging) và bấm **Run**.
+1. Mở thư mục `Scan3D/android` bằng Android Studio (Windows hoặc Linux), chờ Gradle Sync xong.
+2. Cắm điện thoại (Android 7.0 trở lên, đã bật USB debugging) và bấm **Run**. Trên Linux, nếu Android Studio không thấy điện thoại, xem ghi chú ở bước 4.2 trong [HUONG_DAN_CHAY_DU_AN.md](HUONG_DAN_CHAY_DU_AN.md).
 3. Điện thoại và laptop phải **cùng mạng Wi-Fi**.
 4. Trong ứng dụng, nhập `http://<IP laptop>:8000` rồi bấm **Kiểm tra kết nối**. Phải thấy `COLMAP: sẵn sàng`.
 
@@ -150,9 +184,9 @@ Các thông số khác (kích thước ảnh, độ chi tiết Poisson, số tam
 | Hiện tượng | Cách khắc phục |
 |---|---|
 | Ứng dụng không kết nối được server | Kiểm tra cùng Wi-Fi, đúng IP, đã mở cổng 8000 trên tường lửa |
-| `COLMAP: CHƯA cài hoặc sai đường dẫn` | Sửa `COLMAP_BIN` trong `run_server.bat` |
+| `COLMAP: CHƯA cài hoặc sai đường dẫn` | Windows: sửa `COLMAP_BIN` trong `run_server.bat`. Linux: kiểm tra `~/miniforge3/envs/colmap/bin/colmap help`, hoặc chạy `COLMAP_BIN=/duong/dan/toi/colmap bash run_server.sh` |
 | "Không xác định được vị trí camera" | Chụp dày hơn, ảnh trùng nhau nhiều hơn, vật thể cần có chi tiết |
-| Lỗi ở bước `patch_match_stereo` | Cần bản COLMAP có CUDA; nếu thiếu VRAM, giảm `DENSE_MAX_IMAGE_SIZE` |
+| Lỗi ở bước `patch_match_stereo` | Cần bản COLMAP có CUDA (trên Linux không dùng bản `apt`); nếu thiếu VRAM, giảm `DENSE_MAX_IMAGE_SIZE` |
 | Mô hình dính cả mặt bàn | Đặt vật lên nền trơn khác màu vật thể để AI tách nền dễ hơn |
 | Mô hình bị nghiêng | Chụp đủ một vòng quanh vật thể để thuật toán xác định được hướng thẳng đứng |
 
